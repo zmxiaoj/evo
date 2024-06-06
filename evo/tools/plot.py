@@ -407,7 +407,8 @@ def traj(ax: Axes, plot_mode: PlotMode, traj: trajectory.PosePath3D,
     if SETTINGS.plot_xyz_realistic:
         set_aspect_equal(ax)
     if label and SETTINGS.plot_show_legend:
-        ax.legend(frameon=True)
+        # fix the location of legend
+        ax.legend(frameon=True, loc='upper right')
     if plot_start_end_markers:
         add_start_end_markers(ax, plot_mode, traj, start_color=color,
                               end_color=color, alpha=alpha)
