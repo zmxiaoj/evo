@@ -490,7 +490,7 @@ def traj_colormap(ax: Axes, traj: trajectory.PosePath3D, array: ListOrArray,
         "{0:0.3f}".format(max_map)
     ])
     if title:
-        ax.legend(frameon=True)
+        ax.legend(frameon=True, loc='upper right')
         ax.set_title(title)
     if plot_start_end_markers:
         add_start_end_markers(ax, plot_mode, traj, start_color=colors[0],
@@ -610,8 +610,7 @@ def traj_xyz(axarr: np.ndarray, traj: trajectory.PosePath3D, style: str = '-',
         axarr[i].set_ylabel(ylabels[i])
     axarr[2].set_xlabel(xlabel)
     if label and SETTINGS.plot_show_legend:
-        axarr[0].legend(frameon=True)
-
+        axarr[0].legend(frameon=True, loc='upper right')
 
 def traj_rpy(axarr: np.ndarray, traj: trajectory.PosePath3D, style: str = '-',
              color='black', label: str = "", alpha: float = 1.0,
@@ -648,7 +647,7 @@ def traj_rpy(axarr: np.ndarray, traj: trajectory.PosePath3D, style: str = '-',
         axarr[i].set_ylabel(ylabels[i])
     axarr[2].set_xlabel(xlabel)
     if label and SETTINGS.plot_show_legend:
-        axarr[0].legend(frameon=True)
+        axarr[0].legend(frameon=True, loc='upper right')
 
 
 def speeds(ax: Axes, traj: trajectory.PoseTrajectory3D, style: str = '-',
@@ -670,7 +669,7 @@ def speeds(ax: Axes, traj: trajectory.PoseTrajectory3D, style: str = '-',
     ax.set_xlabel("$t$ (s)")
     ax.set_ylabel("$v$ (m/s)")
     if label and SETTINGS.plot_show_legend:
-        ax.legend(frameon=True)
+        ax.legend(frameon=True, loc='upper right')
 
 
 def trajectories(fig: Figure, trajectories: typing.Union[
@@ -780,7 +779,7 @@ def error_array(ax: Axes, err_array: ListOrArray,
     plt.ylabel(ylabel if ylabel else name)
     plt.xlabel(xlabel)
     plt.title(title)
-    plt.legend(frameon=True)
+    plt.legend(frameon=True, loc='upper right')
 
 
 def ros_map(
