@@ -601,6 +601,8 @@ def traj_xyz(axarr: np.ndarray, traj: trajectory.PosePath3D, style: str = '-',
         f"$x$ ({length_unit.value})", f"$y$ ({length_unit.value})",
         f"$z$ ({length_unit.value})"
     ]
+    # get the bound of x-axis limits
+    x_min, x_max = np.min(x), np.max(x)
     for i in range(0, 3):
         if length_unit is not Unit.meters:
             formatter = _get_length_formatter(length_unit)
@@ -608,6 +610,8 @@ def traj_xyz(axarr: np.ndarray, traj: trajectory.PosePath3D, style: str = '-',
         axarr[i].plot(x, traj.positions_xyz[:, i], style, color=color,
                       label=label, alpha=alpha)
         axarr[i].set_ylabel(ylabels[i])
+        # set x-axis limits
+        axarr[i].set_xlim([x_min, x_max])
     axarr[2].set_xlabel(xlabel)
     if label and SETTINGS.plot_show_legend:
         axarr[0].legend(frameon=True, loc='upper right')
@@ -641,10 +645,14 @@ def traj_rpy(axarr: np.ndarray, traj: trajectory.PosePath3D, style: str = '-',
         x = np.arange(0., len(angles))
         xlabel = "index"
     ylabels = ["$roll$ (deg)", "$pitch$ (deg)", "$yaw$ (deg)"]
+    # get the bound of x-axis limits
+    x_min, x_max = np.min(x), np.max(x)
     for i in range(0, 3):
         axarr[i].plot(x, np.rad2deg(angles[:, i]), style, color=color,
                       label=label, alpha=alpha)
         axarr[i].set_ylabel(ylabels[i])
+        # set x-axis limits
+        axarr[i].set_xlim([x_min, x_max])
     axarr[2].set_xlabel(xlabel)
     if label and SETTINGS.plot_show_legend:
         axarr[0].legend(frameon=True, loc='upper right')
