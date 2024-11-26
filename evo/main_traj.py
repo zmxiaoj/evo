@@ -312,7 +312,7 @@ def run(args):
         fig_rpy, axarr_rpy = plt.subplots(3, sharex="col",
                                           figsize=tuple(SETTINGS.plot_figsize))
         fig_traj = plt.figure(figsize=tuple(SETTINGS.plot_figsize))
-        fig_speed = plt.figure()
+        fig_speed = None
 
         plot_mode = plot.PlotMode[args.plot_mode]
         length_unit = Unit(SETTINGS.plot_trajectory_length_unit)
@@ -351,6 +351,8 @@ def run(args):
                           alpha=SETTINGS.plot_reference_alpha,
                           start_timestamp=start_time)
             if isinstance(ref_traj, trajectory.PoseTrajectory3D):
+                if fig_speed is None:
+                    fig_speed = plt.figure()
                 try:
                     plot.speeds(fig_speed.gca(), ref_traj,
                                 style=SETTINGS.plot_reference_linestyle,
@@ -402,6 +404,8 @@ def run(args):
                           alpha=SETTINGS.plot_trajectory_alpha,
                           start_timestamp=start_time)
             if isinstance(traj, trajectory.PoseTrajectory3D):
+                if fig_speed is None:
+                    fig_speed = plt.figure()
                 try:
                     plot.speeds(fig_speed.gca(), traj,
                                 style=SETTINGS.plot_trajectory_linestyle,
@@ -416,13 +420,16 @@ def run(args):
                     0., 0.005, "euler_angle_sequence: {}".format(
                         SETTINGS.euler_angle_sequence), fontsize=6)
 
+        if args.map_tile:
+            plot.map_tile(ax_traj, crs=args.map_tile)
         if args.ros_map_yaml:
             plot.ros_map(ax_traj, args.ros_map_yaml, plot_mode)
 
         plot_collection.add_figure("trajectories", fig_traj)
         plot_collection.add_figure("xyz", fig_xyz)
         plot_collection.add_figure("rpy", fig_rpy)
-        plot_collection.add_figure("speeds", fig_speed)
+        if fig_speed:
+            plot_collection.add_figure("speeds", fig_speed)
         if args.plot:
             plot_collection.show()
         if args.save_plot:

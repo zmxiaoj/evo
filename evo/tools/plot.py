@@ -71,10 +71,15 @@ def apply_settings(settings: SettingsContainer = SETTINGS):
                 palette=settings.plot_seaborn_palette)
 
     mpl.rcParams.update({
+        "legend.loc": settings.plot_legend_loc,
         "lines.linewidth": settings.plot_linewidth,
         "text.usetex": settings.plot_usetex,
+        # NOTE: don't call tight_layout manually anymore. See warning here:
+        # https://matplotlib.org/stable/users/explain/axes/constrainedlayout_guide.html
+        "figure.constrained_layout.use": True,
         "font.family": settings.plot_fontfamily,
-        "pgf.texsystem": settings.plot_texsystem
+        "pgf.texsystem": settings.plot_texsystem,
+        "savefig.bbox": "tight",
     })
     if "xkcd" in settings:
         plt.xkcd()
@@ -122,7 +127,6 @@ class PlotCollection:
         return self.title + " (" + str(len(self.figures)) + " figure(s))"
 
     def add_figure(self, name: str, fig: Figure) -> None:
-        fig.tight_layout()
         self.figures[name] = fig
 
     @staticmethod
@@ -178,7 +182,6 @@ class PlotCollection:
         nb = ttk.Notebook(self.root_window)
         nb.grid(row=1, column=0, sticky='NESW')
         for name, fig in self.figures.items():
-            fig.tight_layout()
             tab = ttk.Frame(nb)
             canvas = FigureCanvasTkAgg(self.figures[name], master=tab)
             canvas.draw()
@@ -230,7 +233,6 @@ class PlotCollection:
             import matplotlib.backends.backend_pdf
             pdf = matplotlib.backends.backend_pdf.PdfPages(file_path)
             for name, fig in self.figures.items():
-                # fig.tight_layout()  # TODO
                 pdf.savefig(fig)
             pdf.close()
             logger.info("Plots saved to " + file_path)
@@ -240,7 +242,6 @@ class PlotCollection:
                 if confirm_overwrite and not user.check_and_confirm_overwrite(
                         dest):
                     return
-                fig.tight_layout()
                 fig.savefig(dest)
                 logger.info("Plot saved to " + dest)
 
@@ -901,3 +902,27 @@ def ros_map(
         ax.invert_xaxis()
     if SETTINGS.plot_invert_yaxis:
         ax.invert_yaxis()
+
+
+def map_tile(ax: Axes, crs: str, provider: str = SETTINGS.map_tile_provider):
+    """
+    Downloads and inserts a map tile into the plot axis.
+    Note: requires the optional contextily package to be installed.
+    :param ax: matplotlib axes
+    :param crs: coordinate reference system (e.g. "EPSG:4326")
+    :param provider: tile provider, either as str (e.g. "OpenStreetMap.Mapnik")
+                     or directly as a TileProvider object
+    """
+    if isinstance(ax, Axes3D):
+        raise PlotException("map_tile can't be drawn into a 3D axis")
+
+    try:
+        import contextily as cx
+        from evo.tools import contextily_helper
+    except ImportError as error:
+        raise PlotException(
+            f"contextily package is required for plotting map tiles: {error}")
+
+    if isinstance(provider, str):
+        provider = contextily_helper.get_provider(provider_str=provider)
+    cx.add_basemap(ax, crs=crs, source=provider)

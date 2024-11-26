@@ -51,6 +51,16 @@ DEFAULT_SETTINGS_DICT_DOC = {
          "E.g. 'sxyz' or 'ryxy', where s=static or r=rotating frame.\n"
          "See evo/core/transformations.py for more information.")
     ),
+    "map_tile_provider": (
+        "OpenStreetMap.Mapnik",
+        ("Map tile provider used by the --map_tile option.\n"
+         "Requires the contextily package to be installed.\n"
+         "See: https://contextily.readthedocs.io/en/latest/providers_deepdive.html")
+    ),
+    "map_tile_api_token": (
+        "",
+        "API token for the map_tile_provider, if required."
+    ),
     "plot_axis_marker_scale": (
         0.,
         "Scaling parameter of pose coordinate frame markers. 0 will draw nothing."
@@ -93,6 +103,11 @@ DEFAULT_SETTINGS_DICT_DOC = {
     "plot_invert_yaxis": (
         False,
         "Invert the y-axis of plots."
+    ),
+    "plot_legend_loc": (
+        "best",
+        "Plot legend location. See here for the available 'loc' options:\n"
+        "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html"
     ),
     "plot_linewidth": (
         1.5,

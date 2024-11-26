@@ -48,7 +48,7 @@ requires-python = ">=3.8"
 
 dependencies = [
     "numpy>=1.18.5",
-    "matplotlib",
+    "matplotlib>=3.6.0",
     "scipy>=1.2",
     "pandas",
     "numexpr>=2.7.3",
@@ -61,6 +61,10 @@ dependencies = [
     "pillow",
     "rosbags>=0.9.20",
 ]
+
+[project.optional-dependencies]
+gui = ["PyQt5"]
+geo = ["contextily"]
 
 
 [project.scripts]

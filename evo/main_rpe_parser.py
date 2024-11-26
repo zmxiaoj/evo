@@ -19,19 +19,12 @@ def parser() -> argparse.ArgumentParser:
             "full", "trans_part", "rot_part", "angle_deg", "angle_rad",
             "point_distance", "point_distance_error_ratio"
         ])
-    algo_opts.add_argument("-a", "--align",
-                           help="alignment with Umeyama's method (no scale)",
-                           action="store_true")
     algo_opts.add_argument("-s", "--correct_scale", action="store_true",
                            help="correct scale with Umeyama's method")
     algo_opts.add_argument(
         "--n_to_align",
         help="the number of poses to use for Umeyama alignment, "
         "counted from the start (default: all)", default=-1, type=int)
-    algo_opts.add_argument(
-        "--align_origin",
-        help="align the trajectory origin to the origin of the reference "
-        "trajectory", action="store_true")
     algo_opts.add_argument("-d", "--delta", type=float, default=1,
                            help="delta between relative poses")
     algo_opts.add_argument("-t", "--delta_tol", type=float, default=0.1,
@@ -63,6 +56,15 @@ def parser() -> argparse.ArgumentParser:
         help="Filters out poses if the distance or angle to the previous one "
         " is below the threshold distance or angle. "
         "Angle is expected in degrees.")
+
+    align_opts = algo_opts.add_mutually_exclusive_group()
+    align_opts.add_argument("-a", "--align",
+                            help="alignment with Umeyama's method (no scale)",
+                            action="store_true")
+    align_opts.add_argument(
+        "--align_origin",
+        help="align the trajectory origin to the origin of the reference "
+        "trajectory", action="store_true")
 
     output_opts.add_argument(
         "-p",
@@ -100,6 +102,9 @@ def parser() -> argparse.ArgumentParser:
     output_opts.add_argument(
         "--ros_map_yaml", help="yaml file of an ROS 2D map image (.pgm/.png)"
         " that will be drawn into the plot", default=None)
+    output_opts.add_argument(
+        "--map_tile", help="CRS code of a map tile layer to add to the plot. "
+        "Requires geo-referenced poses and the contextily package installed.")
     output_opts.add_argument("--save_plot", default=None,
                              help="path to save plot")
     output_opts.add_argument("--serialize_plot", default=None,
